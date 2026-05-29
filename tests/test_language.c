@@ -31,7 +31,7 @@ void test_language_by_code_chinese_traditional(void) {
     const bgl_language *lang = bgl_language_by_code(0x09);
     TEST_ASSERT_NOT_NULL(lang);
     TEST_ASSERT_EQUAL_STRING("Chinese", lang->name);
-    TEST_ASSERT_EQUAL_STRING("Traditional Chinese", lang->name2);
+    TEST_ASSERT_EQUAL_STRING("zh-Hant", lang->bcp47);
     TEST_ASSERT_EQUAL_STRING("CP950", lang->encoding);
 }
 
@@ -39,7 +39,7 @@ void test_language_by_code_chinese_simplified(void) {
     const bgl_language *lang = bgl_language_by_code(0x0a);
     TEST_ASSERT_NOT_NULL(lang);
     TEST_ASSERT_EQUAL_STRING("Chinese", lang->name);
-    TEST_ASSERT_EQUAL_STRING("Simplified Chinese", lang->name2);
+    TEST_ASSERT_EQUAL_STRING("zh-Hans", lang->bcp47);
     TEST_ASSERT_EQUAL_STRING("CP936", lang->encoding);
 }
 
