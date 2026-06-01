@@ -182,9 +182,9 @@ int bgl_parse_info_field(const uint8_t *data, size_t data_size, bgl_info *info) 
             if (b_value_len >= 4) {
                 uint32_t lang_code = bgl_read_uint32_be(b_value);
                 const bgl_language *lang = bgl_language_by_code((int)lang_code);
-                if (lang && lang->name) {
+                if (lang && lang->bcp47) {
                     free(info->source_lang);
-                    info->source_lang = bgl_strdup(lang->name);
+                    info->source_lang = bgl_strdup(lang->bcp47);
                 }
             }
             break;
@@ -193,9 +193,9 @@ int bgl_parse_info_field(const uint8_t *data, size_t data_size, bgl_info *info) 
             if (b_value_len >= 4) {
                 uint32_t lang_code = bgl_read_uint32_be(b_value);
                 const bgl_language *lang = bgl_language_by_code((int)lang_code);
-                if (lang && lang->name) {
+                if (lang && lang->bcp47) {
                     free(info->target_lang);
-                    info->target_lang = bgl_strdup(lang->name);
+                    info->target_lang = bgl_strdup(lang->bcp47);
                 }
             }
             break;
@@ -233,6 +233,17 @@ int bgl_parse_info_field(const uint8_t *data, size_t data_size, bgl_info *info) 
             if (b_value_len >= 4) {
                 uint32_t num_entries = bgl_read_uint32_be(b_value);
                 info->entry_count = (int)num_entries;
+            }
+            break;
+
+        case BGL_INFO_ICON1:
+            if (b_value_len > 0) {
+                free(info->icon);
+                info->icon = (uint8_t *)malloc(b_value_len);
+                if (info->icon) {
+                    memcpy(info->icon, b_value, b_value_len);
+                    info->icon_size = b_value_len;
+                }
             }
             break;
 
@@ -345,4 +356,6 @@ void bgl_free_info(bgl_info *info) {
 
     info->utf8_mode = false;
     info->entry_count = 0;
+
+    free(info->icon);       info->icon = NULL;       info->icon_size = 0;
 }

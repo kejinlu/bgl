@@ -47,6 +47,13 @@ const bgl_language *bgl_language_by_code(int code);
 const bgl_language *bgl_language_by_name(const char *name);
 
 /**
+ * @brief Get language information by BCP 47 tag
+ * @param bcp47 BCP 47 language tag (e.g., "en", "zh-Hans")
+ * @return Language information pointer on success, NULL on failure
+ */
+const bgl_language *bgl_language_by_bcp47(const char *bcp47);
+
+/**
  * @brief Get total number of supported languages
  * @return Total number of languages
  */

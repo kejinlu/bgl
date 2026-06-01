@@ -105,6 +105,20 @@ const bgl_language *bgl_language_by_name(const char *name) {
     return NULL;
 }
 
+const bgl_language *bgl_language_by_bcp47(const char *bcp47) {
+    if (!bcp47) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < LANGUAGES_COUNT; i++) {
+        if (strcmp(languages[i].bcp47, bcp47) == 0) {
+            return &languages[i];
+        }
+    }
+
+    return NULL;
+}
+
 int bgl_language_count(void) {
     return (int)LANGUAGES_COUNT;
 }

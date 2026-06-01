@@ -111,6 +111,8 @@ typedef struct {
     char *target_charset;   /**< Target charset (code 0x1b) */
     bool utf8_mode;         /**< UTF-8 mode flag (from FLAGS code 0x11) */
     int entry_count;        /**< Number of entries (from NUM_ENTRIES code 0x0c or actual count) */
+    uint8_t *icon;          /**< Icon data (code 0x0b), typically BMP */
+    size_t icon_size;       /**< Icon data size */
 } bgl_info;
 
 // ============================================================

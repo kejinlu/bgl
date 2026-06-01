@@ -1206,13 +1206,13 @@ static int bgl_detect_encoding(bgl_reader *reader) {
 
     // Get encoding from language
     if (!source_enc && reader->info.source_lang) {
-        const bgl_language *lang = bgl_language_by_name(reader->info.source_lang);
+        const bgl_language *lang = bgl_language_by_bcp47(reader->info.source_lang);
         if (lang) {
             source_enc = lang->encoding;
         }
     }
     if (!target_enc && reader->info.target_lang) {
-        const bgl_language *lang = bgl_language_by_name(reader->info.target_lang);
+        const bgl_language *lang = bgl_language_by_bcp47(reader->info.target_lang);
         if (lang) {
             target_enc = lang->encoding;
         }
