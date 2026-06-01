@@ -18,15 +18,15 @@
 // Constants
 // ============================================================
 
-#define CHARSET_TAG_OPEN "<charset"
-#define CHARSET_TAG_CLOSE "</charset"
-#define MAX_BUFFER_SIZE (10 * 1024 * 1024)  // 10MB
-#define MAX_ENCODING_DEPTH 32               // Maximum nesting depth
-#define MAX_SEGMENTS 256                    // Maximum number of text segments
+#define CHARSET_TAG_OPEN   "<charset"
+#define CHARSET_TAG_CLOSE  "</charset"
+#define MAX_BUFFER_SIZE    (10 * 1024 * 1024) // 10MB
+#define MAX_ENCODING_DEPTH 32                 // Maximum nesting depth
+#define MAX_SEGMENTS       256                // Maximum number of text segments
 
 /** Charset tag lengths (for fallback when '>' not found) */
-#define CHARSET_CLOSE_TAG_LEN 10            // </charset> length
-#define CHARSET_OPEN_TAG_MIN_LEN 15         // <charset c="X"> length (with quotes)
+#define CHARSET_CLOSE_TAG_LEN    10 // </charset> length
+#define CHARSET_OPEN_TAG_MIN_LEN 15 // <charset c="X"> length (with quotes)
 
 // ============================================================
 // Internal Data Structures
@@ -36,9 +36,9 @@
  * @brief Text segment with encoding information
  */
 typedef struct {
-    const uint8_t *data;       /**< Pointer to segment data in original buffer */
-    size_t len;                /**< Segment length */
-    const char *encoding;      /**< Encoding for this segment */
+    const uint8_t *data;  /**< Pointer to segment data in original buffer */
+    size_t len;           /**< Segment length */
+    const char *encoding; /**< Encoding for this segment */
 } text_segment_t;
 
 /**
@@ -46,18 +46,16 @@ typedef struct {
  */
 typedef struct {
     const char *encodings[MAX_ENCODING_DEPTH]; /**< Stack of encoding names */
-    int depth;                                  /**< Current stack depth */
+    int depth;                                 /**< Current stack depth */
 } encoding_stack_t;
 
 // ============================================================
 // Internal Helper Functions - Forward Declarations
 // ============================================================
 
-static int decode_babylon_char_ref(const uint8_t *hex_str, size_t hex_len,
-                                   char *utf8_out, size_t *out_len);
+static int decode_babylon_char_ref(const uint8_t *hex_str, size_t hex_len, char *utf8_out, size_t *out_len);
 
-static int bgl_parse_char_ref(const char *hex_string, size_t str_len,
-                                  uint32_t *code_out);
+static int bgl_parse_char_ref(const char *hex_string, size_t str_len, uint32_t *code_out);
 
 // ============================================================
 // Internal Helper Functions
@@ -113,12 +111,17 @@ static const char *encoding_stack_top(encoding_stack_t *stack) {
  */
 static const char *get_charset_encoding(char type, const char *source_encoding) {
     switch (type) {
-        case 'u': return "UTF-8";
-        case 'k': // Source encoding
-        case 'e': return source_encoding ? source_encoding : "CP1252";
-        case 'g': return "GBK";
-        case 't': return "BABYLON-REF";  // Special marker for Babylon character references
-        default:  return NULL;
+    case 'u':
+        return "UTF-8";
+    case 'k': // Source encoding
+    case 'e':
+        return source_encoding ? source_encoding : "CP1252";
+    case 'g':
+        return "GBK";
+    case 't':
+        return "BABYLON-REF"; // Special marker for Babylon character references
+    default:
+        return NULL;
     }
 }
 
@@ -126,14 +129,14 @@ static const char *get_charset_encoding(char type, const char *source_encoding) 
  * @brief Check if string matches a hex reference pattern (4 hex digits)
  */
 static bool is_hex_reference(const uint8_t *data, size_t len) {
-    if (len < 4 || len > 6) {  // Allow 4-5 hex digits plus optional semicolon
+    if (len < 4 || len > 6) { // Allow 4-5 hex digits plus optional semicolon
         return false;
     }
     for (size_t i = 0; i < len; i++) {
         uint8_t c = data[i];
         if (c == ';') {
             // Check if all previous characters are hex
-            return (i >= 4);  // At least 4 hex digits before semicolon
+            return (i >= 4); // At least 4 hex digits before semicolon
         }
         if (!isxdigit(c)) {
             return false;
@@ -148,7 +151,7 @@ static bool is_hex_reference(const uint8_t *data, size_t len) {
  */
 static char *decode_babylon_ref_segment(const uint8_t *data, size_t len, size_t *out_len) {
     // Allocate buffer for output (each reference produces 1-4 UTF-8 bytes)
-    size_t max_output = (len / 5) * 4 + 1;  // Approximate: 5 chars per ref, max 4 UTF-8 bytes
+    size_t max_output = (len / 5) * 4 + 1; // Approximate: 5 chars per ref, max 4 UTF-8 bytes
     char *result = (char *)malloc(max_output);
     if (!result) {
         return NULL;
@@ -178,7 +181,7 @@ static char *decode_babylon_ref_segment(const uint8_t *data, size_t len, size_t 
             }
         }
 
-        start = end + 1;  // Skip semicolon
+        start = end + 1; // Skip semicolon
     }
 
     result[result_pos] = '\0';
@@ -189,8 +192,8 @@ static char *decode_babylon_ref_segment(const uint8_t *data, size_t len, size_t 
 /**
  * @brief Encoding conversion using iconv
  */
-static char *convert_encoding_iconv(const char *to_encoding, const char *from_encoding,
-                                   const uint8_t *input, size_t input_len, size_t *output_len) {
+static char *convert_encoding_iconv(const char *to_encoding, const char *from_encoding, const uint8_t *input,
+                                    size_t input_len, size_t *output_len) {
     if (!input || input_len == 0) {
         *output_len = 0;
         return bgl_strdup("");
@@ -236,8 +239,8 @@ static char *convert_encoding_iconv(const char *to_encoding, const char *from_en
 /**
  * @brief Find string (case-insensitive)
  */
-static const uint8_t *find_str_case_insensitive(const uint8_t *haystack, size_t haystack_len,
-                                                const char *needle, size_t *pos) {
+static const uint8_t *find_str_case_insensitive(const uint8_t *haystack, size_t haystack_len, const char *needle,
+                                                size_t *pos) {
     size_t needle_len = strlen(needle);
     if (needle_len == 0 || needle_len > haystack_len) {
         return NULL;
@@ -333,7 +336,7 @@ static int bgl_parse_char_ref(const char *hex_string, size_t str_len, uint32_t *
         } else if (c >= 'A' && c <= 'F') {
             code |= (c - 'A' + 10);
         } else {
-            return -1;  // Invalid hex character
+            return -1; // Invalid hex character
         }
     }
 
@@ -341,8 +344,7 @@ static int bgl_parse_char_ref(const char *hex_string, size_t str_len, uint32_t *
     return 0;
 }
 
-char *bgl_decode_text(const uint8_t *data, size_t data_size,
-                      const char *encoding) {
+char *bgl_decode_text(const uint8_t *data, size_t data_size, const char *encoding) {
     if (!data || data_size == 0 || !encoding) {
         return NULL;
     }
@@ -381,9 +383,8 @@ static size_t find_tag_len(const uint8_t *tag_start, size_t max_len) {
  * 4. Decode each segment to UTF-8
  * 5. Concatenate all segments
  */
-char *bgl_decode_charset_tags(const uint8_t *data, size_t data_size,
-                                 const char *default_encoding,
-                                 const char *source_encoding) {
+char *bgl_decode_charset_tags(const uint8_t *data, size_t data_size, const char *default_encoding,
+                              const char *source_encoding) {
     if (!data || data_size == 0 || !default_encoding) {
         return NULL;
     }
@@ -397,17 +398,16 @@ char *bgl_decode_charset_tags(const uint8_t *data, size_t data_size,
     int segment_count = 0;
 
     size_t pos = 0;
-    size_t text_start = 0;  // Start of current text segment
+    size_t text_start = 0; // Start of current text segment
 
     while (pos < data_size && segment_count < MAX_SEGMENTS) {
         size_t open_pos;
-        const uint8_t *open_tag = find_str_case_insensitive(data + pos, data_size - pos,
-                                                           CHARSET_TAG_OPEN, &open_pos);
+        const uint8_t *open_tag = find_str_case_insensitive(data + pos, data_size - pos, CHARSET_TAG_OPEN, &open_pos);
 
         // Check for closing tag
         size_t close_pos;
-        const uint8_t *close_tag = find_str_case_insensitive(data + pos, data_size - pos,
-                                                            CHARSET_TAG_CLOSE, &close_pos);
+        const uint8_t *close_tag =
+            find_str_case_insensitive(data + pos, data_size - pos, CHARSET_TAG_CLOSE, &close_pos);
 
         // Determine which tag comes first
         bool has_open = (open_tag != NULL);
@@ -491,17 +491,15 @@ char *bgl_decode_charset_tags(const uint8_t *data, size_t data_size,
         if (strcmp(segments[i].encoding, "BABYLON-REF") == 0) {
             // Decode Babylon character references
             size_t part_len;
-            decoded_parts[i] = decode_babylon_ref_segment(segments[i].data,
-                                                          segments[i].len, &part_len);
+            decoded_parts[i] = decode_babylon_ref_segment(segments[i].data, segments[i].len, &part_len);
             if (decoded_parts[i]) {
                 total_len += part_len;
             }
         } else {
             // Decode using iconv
             size_t part_len;
-            decoded_parts[i] = convert_encoding_iconv("UTF-8", segments[i].encoding,
-                                                      segments[i].data,
-                                                      segments[i].len, &part_len);
+            decoded_parts[i] =
+                convert_encoding_iconv("UTF-8", segments[i].encoding, segments[i].data, segments[i].len, &part_len);
             if (decoded_parts[i]) {
                 total_len += part_len;
             }
@@ -574,10 +572,14 @@ static size_t decode_single_entity(const char *entity, char *output) {
             for (size_t i = 3; i < entity_len - 1; i++) {
                 char c = entity[i];
                 code <<= 4;
-                if (c >= '0' && c <= '9') code |= (c - '0');
-                else if (c >= 'a' && c <= 'f') code |= (c - 'a' + 10);
-                else if (c >= 'A' && c <= 'F') code |= (c - 'A' + 10);
-                else return 0;  // Invalid hex
+                if (c >= '0' && c <= '9')
+                    code |= (c - '0');
+                else if (c >= 'a' && c <= 'f')
+                    code |= (c - 'a' + 10);
+                else if (c >= 'A' && c <= 'F')
+                    code |= (c - 'A' + 10);
+                else
+                    return 0; // Invalid hex
             }
             return bgl_codepoint_to_utf8(code, output);
         } else {
@@ -588,7 +590,7 @@ static size_t decode_single_entity(const char *entity, char *output) {
                 if (c >= '0' && c <= '9') {
                     code = code * 10 + (c - '0');
                 } else {
-                    return 0;  // Invalid decimal
+                    return 0; // Invalid decimal
                 }
             }
             return bgl_codepoint_to_utf8(code, output);
@@ -599,14 +601,16 @@ static size_t decode_single_entity(const char *entity, char *output) {
     const char *name = entity + 1;
     size_t name_len = entity_len - 2;
 
-    static const struct { const char *name; uint32_t code; } entities[] = {
-        {"amp", '&'}, {"lt", '<'}, {"gt", '>'}, {"quot", '"'},
-        {"apos", '\''}, {"nbsp", 160}, {"copy", 169}, {"reg", 174},
-        {"euro", 8364}, {"mdash", 8211}, {"ldash", 8211},
-        {"lsquo", 8216}, {"rsquo", 8217}, {"hellip", 8230},
+    static const struct {
+        const char *name;
+        uint32_t code;
+    } entities[] = {
+        {"amp", '&'},    {"lt", '<'},     {"gt", '>'},     {"quot", '"'},    {"apos", '\''},
+        {"nbsp", 160},   {"copy", 169},   {"reg", 174},    {"euro", 8364},   {"mdash", 8211},
+        {"ldash", 8211}, {"lsquo", 8216}, {"rsquo", 8217}, {"hellip", 8230},
     };
 
-    for (size_t i = 0; i < sizeof(entities)/sizeof(entities[0]); i++) {
+    for (size_t i = 0; i < sizeof(entities) / sizeof(entities[0]); i++) {
         size_t len = strlen(entities[i].name);
         if (name_len == len && bgl_strncasecmp(name, entities[i].name, len) == 0) {
             return bgl_codepoint_to_utf8(entities[i].code, output);
@@ -624,7 +628,7 @@ static char *decode_entities_keep_tags(const char *input) {
     if (!input) return NULL;
 
     size_t input_len = strlen(input);
-    char *result = (char *)malloc(input_len * 4 + 1);  // Worst case expansion
+    char *result = (char *)malloc(input_len * 4 + 1); // Worst case expansion
     if (!result) return NULL;
 
     size_t result_pos = 0;
@@ -683,14 +687,13 @@ static char *bgl_decode_html_entities_impl(const char *input, bgl_html_option op
     // STRIP option: Use libxml2 (removes tags and decodes entities)
     // Use libxml2's HTML parser to decode entities
     // Create a minimal HTML document context for parsing
-    htmlDocPtr doc = htmlReadDoc(
-        (const xmlChar *)input,
-        NULL,             // URL (not needed)
-        "UTF-8",          // encoding
-        HTML_PARSE_NOERROR |    // Suppress error reports
-        HTML_PARSE_NOWARNING |  // Suppress warning reports
-        HTML_PARSE_NONET |      // Disable network access
-        HTML_PARSE_NOIMPLIED    // Don't add implied tags
+    htmlDocPtr doc = htmlReadDoc((const xmlChar *)input,
+                                 NULL,                      // URL (not needed)
+                                 "UTF-8",                   // encoding
+                                 HTML_PARSE_NOERROR |       // Suppress error reports
+                                     HTML_PARSE_NOWARNING | // Suppress warning reports
+                                     HTML_PARSE_NONET |     // Disable network access
+                                     HTML_PARSE_NOIMPLIED   // Don't add implied tags
     );
 
     if (!doc) {
@@ -744,7 +747,7 @@ int bgl_decode_html_entities(char **inout, bgl_html_option option) {
 
     // Fast path: check if has HTML entities
     if (!has_html_entities(input)) {
-        return 0;  // No change needed
+        return 0; // No change needed
     }
 
     // Slow path: process the string
@@ -875,7 +878,7 @@ int bgl_strip_dollar_indexes(char **inout) {
 
     // Fast path: check if has dollar signs
     if (!has_dollar_signs(input)) {
-        return 0;  // No change needed
+        return 0; // No change needed
     }
 
     // Slow path: process the string
@@ -904,9 +907,9 @@ static bool is_bgl_control_char(char c) {
     unsigned char uc = (unsigned char)c;
 
     // Control characters to remove
-    if (uc <= 0x08) return true;   // \x00-\x08
-    if (uc == 0x0c) return true;   // form feed
-    if (uc >= 0x0e && uc <= 0x1f) return true;  // \x0e-\x1f
+    if (uc <= 0x08) return true;               // \x00-\x08
+    if (uc == 0x0c) return true;               // form feed
+    if (uc >= 0x0e && uc <= 0x1f) return true; // \x0e-\x1f
 
     // Preserve whitespace characters
     // 0x09 = tab, 0x0a = LF, 0x0b = VT, 0x0d = CR
@@ -1194,7 +1197,7 @@ int bgl_strip_slash_alt_key(char **inout) {
             bool at_start = (src == str);
             bool after_ws = (src > str && isspace((unsigned char)*(src - 1)));
             if ((at_start || after_ws) && isalnum((unsigned char)*(src + 1))) {
-                continue;  // skip this '/'
+                continue; // skip this '/'
             }
         }
         *dst++ = *src;
@@ -1453,7 +1456,7 @@ int bgl_strip(char **inout) {
 
     // Fast path: check if has leading/trailing whitespace
     if (!has_leading_trailing_whitespace(input)) {
-        return 0;  // No change needed
+        return 0; // No change needed
     }
 
     // Slow path: process the string
@@ -1542,7 +1545,7 @@ int bgl_strip_html_tags(char **inout) {
 
     // Fast path: check if has HTML tags
     if (!has_html_tags(input)) {
-        return 0;  // No change needed
+        return 0; // No change needed
     }
 
     // Slow path: process the string

@@ -53,33 +53,33 @@ typedef struct {
  * @brief Type 3 metadata item types
  */
 typedef enum {
-    BGL_INFO_TITLE = 0x01,              /**< Dictionary title */
-    BGL_INFO_AUTHOR = 0x02,             /**< Author */
-    BGL_INFO_EMAIL = 0x03,              /**< Author email */
-    BGL_INFO_COPYRIGHT = 0x04,          /**< Copyright information */
-    BGL_INFO_SOURCE_LANG = 0x07,        /**< Source language */
-    BGL_INFO_TARGET_LANG = 0x08,        /**< Target language */
-    BGL_INFO_DESCRIPTION = 0x09,        /**< Description */
-    BGL_INFO_BROWSING_ENABLED = 0x0a,   /**< Browsing enabled */
-    BGL_INFO_ICON1 = 0x0b,              /**< Icon 1 */
-    BGL_INFO_NUM_ENTRIES = 0x0c,        /**< Number of entries */
-    BGL_INFO_FLAGS = 0x11,              /**< Flags (UTF-8, etc.) */
-    BGL_INFO_CREATION_TIME = 0x14,      /**< Creation time */
-    BGL_INFO_SOURCE_CHARSET = 0x1a,     /**< Source charset */
-    BGL_INFO_TARGET_CHARSET = 0x1b,     /**< Target charset */
-    BGL_INFO_FIRST_UPDATED = 0x1c,      /**< First update time */
-    BGL_INFO_CASE_SENSITIVE2 = 0x20,    /**< Case sensitive 2 */
-    BGL_INFO_ICON2 = 0x24,              /**< Icon 2 */
+    BGL_INFO_TITLE = 0x01,                /**< Dictionary title */
+    BGL_INFO_AUTHOR = 0x02,               /**< Author */
+    BGL_INFO_EMAIL = 0x03,                /**< Author email */
+    BGL_INFO_COPYRIGHT = 0x04,            /**< Copyright information */
+    BGL_INFO_SOURCE_LANG = 0x07,          /**< Source language */
+    BGL_INFO_TARGET_LANG = 0x08,          /**< Target language */
+    BGL_INFO_DESCRIPTION = 0x09,          /**< Description */
+    BGL_INFO_BROWSING_ENABLED = 0x0a,     /**< Browsing enabled */
+    BGL_INFO_ICON1 = 0x0b,                /**< Icon 1 */
+    BGL_INFO_NUM_ENTRIES = 0x0c,          /**< Number of entries */
+    BGL_INFO_FLAGS = 0x11,                /**< Flags (UTF-8, etc.) */
+    BGL_INFO_CREATION_TIME = 0x14,        /**< Creation time */
+    BGL_INFO_SOURCE_CHARSET = 0x1a,       /**< Source charset */
+    BGL_INFO_TARGET_CHARSET = 0x1b,       /**< Target charset */
+    BGL_INFO_FIRST_UPDATED = 0x1c,        /**< First update time */
+    BGL_INFO_CASE_SENSITIVE2 = 0x20,      /**< Case sensitive 2 */
+    BGL_INFO_ICON2 = 0x24,                /**< Icon 2 */
     BGL_INFO_PURCHASE_LICENSE_MSG = 0x2c, /**< Purchase license message */
     BGL_INFO_LICENSE_EXPIRED_MSG = 0x2d,  /**< License expired message */
-    BGL_INFO_PURCHASE_ADDRESS = 0x2e,   /**< Purchase address */
-    BGL_INFO_TITLE_WIDE = 0x30,         /**< Wide title */
-    BGL_INFO_AUTHOR_WIDE = 0x31,        /**< Wide author */
-    BGL_INFO_LAST_UPDATED = 0x33,       /**< Last update time */
-    BGL_INFO_CONTRACTIONS = 0x3b,       /**< Contractions */
-    BGL_INFO_FONT_NAME = 0x3d,          /**< Font name */
-    BGL_INFO_ABOUT = 0x41,              /**< About information */
-    BGL_INFO_LENGTH = 0x43,             /**< Substring match length */
+    BGL_INFO_PURCHASE_ADDRESS = 0x2e,     /**< Purchase address */
+    BGL_INFO_TITLE_WIDE = 0x30,           /**< Wide title */
+    BGL_INFO_AUTHOR_WIDE = 0x31,          /**< Wide author */
+    BGL_INFO_LAST_UPDATED = 0x33,         /**< Last update time */
+    BGL_INFO_CONTRACTIONS = 0x3b,         /**< Contractions */
+    BGL_INFO_FONT_NAME = 0x3d,            /**< Font name */
+    BGL_INFO_ABOUT = 0x41,                /**< About information */
+    BGL_INFO_LENGTH = 0x43,               /**< Substring match length */
 } bgl_info_field_code;
 
 // ============================================================
@@ -100,19 +100,19 @@ typedef enum {
  * - "info" = Collection/aggregation of all info fields parsed from Type 3 blocks
  */
 typedef struct {
-    char *title;            /**< Dictionary title (code 0x01) */
-    char *author;           /**< Author (code 0x02) */
-    char *email;            /**< Author email (code 0x03) */
-    char *copyright;        /**< Copyright information (code 0x04) */
-    char *description;      /**< Description (code 0x09) */
-    char *source_lang;      /**< Source language name (code 0x07) */
-    char *target_lang;      /**< Target language name (code 0x08) */
-    char *source_charset;   /**< Source charset (code 0x1a) */
-    char *target_charset;   /**< Target charset (code 0x1b) */
-    bool utf8_mode;         /**< UTF-8 mode flag (from FLAGS code 0x11) */
-    int entry_count;        /**< Number of entries (from NUM_ENTRIES code 0x0c or actual count) */
-    uint8_t *icon;          /**< Icon data (code 0x0b), typically BMP */
-    size_t icon_size;       /**< Icon data size */
+    char *title;          /**< Dictionary title (code 0x01) */
+    char *author;         /**< Author (code 0x02) */
+    char *email;          /**< Author email (code 0x03) */
+    char *copyright;      /**< Copyright information (code 0x04) */
+    char *description;    /**< Description (code 0x09) */
+    char *source_lang;    /**< Source language name (code 0x07) */
+    char *target_lang;    /**< Target language name (code 0x08) */
+    char *source_charset; /**< Source charset (code 0x1a) */
+    char *target_charset; /**< Target charset (code 0x1b) */
+    bool utf8_mode;       /**< UTF-8 mode flag (from FLAGS code 0x11) */
+    int entry_count;      /**< Number of entries (from NUM_ENTRIES code 0x0c or actual count) */
+    uint8_t *icon;        /**< Icon data (code 0x0b), typically BMP */
+    size_t icon_size;     /**< Icon data size */
 } bgl_info;
 
 // ============================================================

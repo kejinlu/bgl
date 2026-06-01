@@ -30,10 +30,7 @@ static inline uint16_t bgl_read_uint16_be(const uint8_t *data) {
  * @brief Read big-endian 32-bit unsigned integer
  */
 static inline uint32_t bgl_read_uint32_be(const uint8_t *data) {
-    return ((uint32_t)data[0] << 24) |
-           ((uint32_t)data[1] << 16) |
-           ((uint32_t)data[2] << 8) |
-           ((uint32_t)data[3]);
+    return ((uint32_t)data[0] << 24) | ((uint32_t)data[1] << 16) | ((uint32_t)data[2] << 8) | ((uint32_t)data[3]);
 }
 
 // ============================================================

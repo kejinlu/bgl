@@ -37,9 +37,8 @@ extern "C" {
  *
  * Note: The caller must call free() on the returned string when done.
  */
-char *bgl_decode_charset_tags(const uint8_t *data, size_t data_size,
-                                 const char *default_encoding,
-                                 const char *source_encoding);
+char *bgl_decode_charset_tags(const uint8_t *data, size_t data_size, const char *default_encoding,
+                              const char *source_encoding);
 
 /**
  * @brief Simple text decoding (without charset tags)
@@ -50,8 +49,7 @@ char *bgl_decode_charset_tags(const uint8_t *data, size_t data_size,
  *
  * Note: The caller must call free() on the returned string when done.
  */
-char *bgl_decode_text(const uint8_t *data, size_t data_size,
-                        const char *encoding);
+char *bgl_decode_text(const uint8_t *data, size_t data_size, const char *encoding);
 
 /**
  * @brief HTML entity decoding options

@@ -29,7 +29,7 @@
 #define BGL_HEADER_SIZE 6
 
 /** Maximum buffer size */
-#define BGL_MAX_BUFFER_SIZE (10 * 1024 * 1024)  // 10MB
+#define BGL_MAX_BUFFER_SIZE (10 * 1024 * 1024) // 10MB
 
 // ============================================================
 // Internal Data Types
@@ -39,13 +39,13 @@
  * @brief BGL block types
  */
 typedef enum {
-    BGL_BLOCK_TYPE_EXTENDED = 0,    /**< Extended type (followed by 1-byte type code) */
-    BGL_BLOCK_TYPE_ENTRY = 1,       /**< Dictionary entry (standard format) */
-    BGL_BLOCK_TYPE_RESOURCE = 2,    /**< Embedded resource (image/HTML) */
-    BGL_BLOCK_TYPE_INFO = 3,        /**< Info block (Type 3 metadata item) */
+    BGL_BLOCK_TYPE_EXTENDED = 0,      /**< Extended type (followed by 1-byte type code) */
+    BGL_BLOCK_TYPE_ENTRY = 1,         /**< Dictionary entry (standard format) */
+    BGL_BLOCK_TYPE_RESOURCE = 2,      /**< Embedded resource (image/HTML) */
+    BGL_BLOCK_TYPE_INFO = 3,          /**< Info block (Type 3 metadata item) */
     BGL_BLOCK_TYPE_ENTRIES_START = 6, /**< Entries section start marker */
-    BGL_BLOCK_TYPE_EOF = 4,         /**< End of file */
-    BGL_BLOCK_TYPE_ENTRY_TYPE7 = 7,  /**< Entry type 7 */
+    BGL_BLOCK_TYPE_EOF = 4,           /**< End of file */
+    BGL_BLOCK_TYPE_ENTRY_TYPE7 = 7,   /**< Entry type 7 */
     BGL_BLOCK_TYPE_ENTRY_TYPE10 = 10, /**< Entry type 10 */
     BGL_BLOCK_TYPE_ENTRY_TYPE11 = 11, /**< Entry type 11 */
     BGL_BLOCK_TYPE_ENTRY_TYPE13 = 13, /**< Entry type 13 */
@@ -55,19 +55,19 @@ typedef enum {
  * @brief BGL block structure
  */
 typedef struct {
-    uint8_t type;           /**< Block type */
-    uint8_t *data;          /**< Block data */
-    size_t data_size;        /**< Data length */
-    size_t offset;          /**< Offset in gzip stream */
+    uint8_t type;     /**< Block type */
+    uint8_t *data;    /**< Block data */
+    size_t data_size; /**< Data length */
+    size_t offset;    /**< Offset in gzip stream */
 } bgl_block;
 
 /**
  * @brief BGL file header information
  */
 typedef struct {
-    uint32_t signature;      /**< File signature */
-    uint32_t gzip_offset;    /**< Gzip data offset */
-    size_t gzip_size;        /**< Gzip data size */
+    uint32_t signature;   /**< File signature */
+    uint32_t gzip_offset; /**< Gzip data offset */
+    size_t gzip_size;     /**< Gzip data size */
 } bgl_header;
 
 /**
@@ -75,51 +75,51 @@ typedef struct {
  */
 struct bgl_reader {
     // File information
-    char *file_path;         /**< File path */
-    FILE *fp;                /**< File handle */
-    size_t file_size;        /**< File size */
+    char *file_path;  /**< File path */
+    FILE *fp;         /**< File handle */
+    size_t file_size; /**< File size */
 
     // BGL file header
     bgl_header header;
 
     // Gzip decompression stream
-    gzFile gzf;              /**< zlib gzip file handle */
-    size_t gzip_offset;      /**< Gzip data offset */
-    size_t entries_start_offset;    /**< Offset in gzip stream where entries section starts */
-    size_t resources_start_offset;  /**< Offset in gzip stream where first resource starts */
+    gzFile gzf;                    /**< zlib gzip file handle */
+    size_t gzip_offset;            /**< Gzip data offset */
+    size_t entries_start_offset;   /**< Offset in gzip stream where entries section starts */
+    size_t resources_start_offset; /**< Offset in gzip stream where first resource starts */
 
     // Dictionary info (collection of all Type 3 info blocks)
     bgl_info info;
 
     // Encoding information (all point to static memory, no need to free)
-    const char *source_encoding;   /**< Source language encoding */
-    const char *target_encoding;   /**< Target language encoding */
-    const char *default_encoding;  /**< Default charset (from Type 0 block, code 8) */
+    const char *source_encoding;  /**< Source language encoding */
+    const char *target_encoding;  /**< Target language encoding */
+    const char *default_encoding; /**< Default charset (from Type 0 block, code 8) */
 
     // Info loading state
-    bool info_loaded;        /**< Whether info has been loaded */
+    bool info_loaded; /**< Whether info has been loaded */
 
     // Counters (actual count from scanning)
-    int entry_count;         /**< Actual number of entry blocks */
-    int resource_count;      /**< Actual number of resource blocks */
+    int entry_count;    /**< Actual number of entry blocks */
+    int resource_count; /**< Actual number of resource blocks */
 };
 
 /**
  * @brief BGL entry iterator (full definition, opaque to external code)
  */
 struct bgl_entry_iterator {
-    bgl_reader *reader;           /**< Associated parser */
-    bool finished;                /**< Whether iteration is complete */
-    bgl_entry current;            /**< Current entry (owned by iterator) */
+    bgl_reader *reader; /**< Associated parser */
+    bool finished;      /**< Whether iteration is complete */
+    bgl_entry current;  /**< Current entry (owned by iterator) */
 };
 
 /**
  * @brief BGL resource iterator (full definition, opaque to external code)
  */
 struct bgl_resource_iterator {
-    bgl_reader *reader;           /**< Associated parser */
-    bool finished;                /**< Whether iteration is complete */
-    bgl_resource current;         /**< Current resource (owned by iterator) */
+    bgl_reader *reader;   /**< Associated parser */
+    bool finished;        /**< Whether iteration is complete */
+    bgl_resource current; /**< Current resource (owned by iterator) */
 };
 
 // ============================================================
@@ -207,8 +207,7 @@ bgl_reader *bgl_reader_open(const char *file_path) {
     }
 
     reader->header.signature = bgl_read_uint32_be(header);
-    if (reader->header.signature != BGL_SIGNATURE_1 &&
-        reader->header.signature != BGL_SIGNATURE_2) {
+    if (reader->header.signature != BGL_SIGNATURE_1 && reader->header.signature != BGL_SIGNATURE_2) {
         bgl_reader_close(reader);
         return NULL;
     }
@@ -216,8 +215,7 @@ bgl_reader *bgl_reader_open(const char *file_path) {
     reader->header.gzip_offset = bgl_read_uint16_be(header + 4);
     reader->gzip_offset = reader->header.gzip_offset;
 
-    if (reader->header.gzip_offset < BGL_HEADER_SIZE ||
-        reader->header.gzip_offset >= reader->file_size) {
+    if (reader->header.gzip_offset < BGL_HEADER_SIZE || reader->header.gzip_offset >= reader->file_size) {
         bgl_reader_close(reader);
         return NULL;
     }
@@ -299,7 +297,6 @@ static int bgl_load_info(bgl_reader *reader) {
     reader->entry_count = 0;
     reader->resource_count = 0;
 
-
     // Scan all blocks until EOF to collect all info blocks
     // Some BGL files have info blocks scattered throughout, even at the end
     bool found_first_entry = false;
@@ -312,10 +309,8 @@ static int bgl_load_info(bgl_reader *reader) {
 
         // Record the position of the first entry block
         if (!found_first_entry) {
-            if (block->type == BGL_BLOCK_TYPE_ENTRY ||
-                block->type == BGL_BLOCK_TYPE_ENTRY_TYPE7 ||
-                block->type == BGL_BLOCK_TYPE_ENTRY_TYPE10 ||
-                block->type == BGL_BLOCK_TYPE_ENTRY_TYPE11 ||
+            if (block->type == BGL_BLOCK_TYPE_ENTRY || block->type == BGL_BLOCK_TYPE_ENTRY_TYPE7 ||
+                block->type == BGL_BLOCK_TYPE_ENTRY_TYPE10 || block->type == BGL_BLOCK_TYPE_ENTRY_TYPE11 ||
                 block->type == BGL_BLOCK_TYPE_ENTRY_TYPE13) {
                 reader->entries_start_offset = block->offset;
                 found_first_entry = true;
@@ -323,10 +318,8 @@ static int bgl_load_info(bgl_reader *reader) {
         }
 
         // Count entry blocks
-        if (block->type == BGL_BLOCK_TYPE_ENTRY ||
-            block->type == BGL_BLOCK_TYPE_ENTRY_TYPE7 ||
-            block->type == BGL_BLOCK_TYPE_ENTRY_TYPE10 ||
-            block->type == BGL_BLOCK_TYPE_ENTRY_TYPE11 ||
+        if (block->type == BGL_BLOCK_TYPE_ENTRY || block->type == BGL_BLOCK_TYPE_ENTRY_TYPE7 ||
+            block->type == BGL_BLOCK_TYPE_ENTRY_TYPE10 || block->type == BGL_BLOCK_TYPE_ENTRY_TYPE11 ||
             block->type == BGL_BLOCK_TYPE_ENTRY_TYPE13) {
             reader->entry_count++;
         }
@@ -359,8 +352,8 @@ static int bgl_load_info(bgl_reader *reader) {
 
     // Warn if actual entry count differs from metadata
     if (reader->info.entry_count > 0 && reader->entry_count != reader->info.entry_count) {
-        fprintf(stderr, "warning: entry count mismatch: metadata=%d, actual=%d\n",
-                reader->info.entry_count, reader->entry_count);
+        fprintf(stderr, "warning: entry count mismatch: metadata=%d, actual=%d\n", reader->info.entry_count,
+                reader->entry_count);
     }
 
     // Detect encoding
@@ -475,7 +468,7 @@ static int bgl_seek_to_entries(bgl_reader *reader) {
 
     // Check if file has entries
     if (reader->entries_start_offset == (size_t)-1) {
-        return -1;  // No entries
+        return -1; // No entries
     }
 
     // Ensure info is loaded first (this also finds entries_start_offset)
@@ -507,7 +500,7 @@ static int bgl_seek_to_resources(bgl_reader *reader) {
 
     // Check if file has resources
     if (reader->resources_start_offset == (size_t)-1) {
-        return -1;  // No resources
+        return -1; // No resources
     }
 
     // Ensure info is loaded first
@@ -571,7 +564,7 @@ static bgl_status bgl_read_block(bgl_reader *reader, bgl_block **out_block) {
     } else {
         // Need to read additional length bytes (length_code + 1 bytes)
         size_t extra_bytes = length_code + 1;
-        uint8_t extra_len[4];  // Maximum 4 bytes
+        uint8_t extra_len[4]; // Maximum 4 bytes
 
         // extra_bytes maximum value is 4 (length_code=3), safe to cast to unsigned int
         bytes_read = gzread(reader->gzf, extra_len, (unsigned int)extra_bytes);
@@ -589,7 +582,7 @@ static bgl_status bgl_read_block(bgl_reader *reader, bgl_block **out_block) {
 
     // Allocate and read data
     if (data_size > 0) {
-        block->data = (uint8_t *)malloc(data_size + 1);  // +1 for null terminator
+        block->data = (uint8_t *)malloc(data_size + 1); // +1 for null terminator
         if (!block->data) {
             bgl_free_block(block);
             return BGL_ERR_MEMORY;
@@ -602,7 +595,7 @@ static bgl_status bgl_read_block(bgl_reader *reader, bgl_block **out_block) {
             return BGL_ERR_IO;
         }
 
-        block->data[data_size] = '\0';  // null terminate
+        block->data[data_size] = '\0'; // null terminate
         block->data_size = data_size;
     }
 
@@ -680,11 +673,8 @@ static int bgl_parse_entry(bgl_reader *reader, const bgl_block *block, bgl_entry
     }
 
     // Parse definition fields (extract title, title_trans, POS, etc.)
-    if (bgl_parse_definition(data + pos, defi_len,
-                                       reader->source_encoding,
-                                       reader->target_encoding,
-                                       reader->default_encoding,
-                                       &entry->def) != 0) {
+    if (bgl_parse_definition(data + pos, defi_len, reader->source_encoding, reader->target_encoding,
+                             reader->default_encoding, &entry->def) != 0) {
         bgl_free_entry(entry);
         return -1;
     }
@@ -694,7 +684,7 @@ static int bgl_parse_entry(bgl_reader *reader, const bgl_block *block, bgl_entry
     // Step 3: Read alternates (until EOF, 1 byte length each)
     // ============================================================
     // Dynamic array for alternates (grows as needed)
-    size_t alts_capacity = 8;  // Initial capacity (covers most cases)
+    size_t alts_capacity = 8; // Initial capacity (covers most cases)
     entry->alternates = (char **)calloc(alts_capacity, sizeof(char *));
     if (!entry->alternates) {
         bgl_free_entry(entry);
@@ -779,7 +769,7 @@ static int bgl_parse_entry_type11(bgl_reader *reader, const bgl_block *block, bg
     if (pos + 5 > block->data_size) {
         return -1;
     }
-    pos += 1;  // Skip flag byte
+    pos += 1; // Skip flag byte
     uint32_t word_len = bgl_read_uint32_be(data + pos);
     pos += 4;
 
@@ -868,11 +858,8 @@ static int bgl_parse_entry_type11(bgl_reader *reader, const bgl_block *block, bg
     }
 
     // Parse definition fields (extract title, title_trans, POS, etc.)
-    if (bgl_parse_definition(data + pos, defi_len,
-                                       reader->source_encoding,
-                                       reader->target_encoding,
-                                       reader->default_encoding,
-                                       &entry->def) != 0) {
+    if (bgl_parse_definition(data + pos, defi_len, reader->source_encoding, reader->target_encoding,
+                             reader->default_encoding, &entry->def) != 0) {
         bgl_free_entry(entry);
         return -1;
     }
@@ -1024,10 +1011,8 @@ bgl_status bgl_entry_iterator_next(bgl_entry_iterator *iter, const bgl_entry **o
         }
 
         // Only process entry types
-        if (block->type == BGL_BLOCK_TYPE_ENTRY ||
-            block->type == BGL_BLOCK_TYPE_ENTRY_TYPE7 ||
-            block->type == BGL_BLOCK_TYPE_ENTRY_TYPE10 ||
-            block->type == BGL_BLOCK_TYPE_ENTRY_TYPE13) {
+        if (block->type == BGL_BLOCK_TYPE_ENTRY || block->type == BGL_BLOCK_TYPE_ENTRY_TYPE7 ||
+            block->type == BGL_BLOCK_TYPE_ENTRY_TYPE10 || block->type == BGL_BLOCK_TYPE_ENTRY_TYPE13) {
 
             int ret = bgl_parse_entry(iter->reader, block, &iter->current);
             bgl_free_block(block);
@@ -1154,23 +1139,23 @@ static int bgl_parse_type0(const uint8_t *data, size_t data_size, const char **d
     uint8_t code = data[0];
 
     switch (code) {
-        case 2:
-            // A number close to entry count (but not always equal)
-            break;
+    case 2:
+        // A number close to entry count (but not always equal)
+        break;
 
-        case 8:
-            // Default charset
-            if (data_size >= 2) {
-                int charset_code = data[1];
-                const char *encoding = bgl_charset_by_code(charset_code);
-                if (encoding) {
-                    *default_charset_out = encoding;
-                }
+    case 8:
+        // Default charset
+        if (data_size >= 2) {
+            int charset_code = data[1];
+            const char *encoding = bgl_charset_by_code(charset_code);
+            if (encoding) {
+                *default_charset_out = encoding;
             }
-            break;
+        }
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     return 0;

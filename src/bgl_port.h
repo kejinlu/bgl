@@ -10,39 +10,39 @@
 
 // ---------- Platform Detection ----------
 #ifdef _WIN32
-    #define BGL_PLATFORM_WINDOWS 1
+#define BGL_PLATFORM_WINDOWS 1
 #else
-    #define BGL_PLATFORM_WINDOWS 0
+#define BGL_PLATFORM_WINDOWS 0
 #endif
 
 // ---------- Headers ----------
 #ifdef _WIN32
-    #include <io.h>
-    #include <stdlib.h>  // for _strdup
+#include <io.h>
+#include <stdlib.h> // for _strdup
 #else
-    #include <unistd.h>
+#include <unistd.h>
 #endif
 
 // ---------- File Descriptor Operations ----------
 #ifdef _WIN32
-    #define BGL_DUP   _dup
-    #define BGL_LSEEK _lseek
-    #define BGL_FILENO _fileno
+#define BGL_DUP    _dup
+#define BGL_LSEEK  _lseek
+#define BGL_FILENO _fileno
 #else
-    #define BGL_DUP   dup
-    #define BGL_LSEEK lseek
-    #define BGL_FILENO fileno
+#define BGL_DUP    dup
+#define BGL_LSEEK  lseek
+#define BGL_FILENO fileno
 #endif
 
 // ---------- String Operations ----------
 #ifdef _WIN32
-    #define bgl_strdup         _strdup
-    #define bgl_strcasecmp    _stricmp
-    #define bgl_strncasecmp   _strnicmp
+#define bgl_strdup      _strdup
+#define bgl_strcasecmp  _stricmp
+#define bgl_strncasecmp _strnicmp
 #else
-    #define bgl_strdup         strdup
-    #define bgl_strcasecmp    strcasecmp
-    #define bgl_strncasecmp   strncasecmp
+#define bgl_strdup      strdup
+#define bgl_strcasecmp  strcasecmp
+#define bgl_strncasecmp strncasecmp
 #endif
 
 #endif // bgl_port_h

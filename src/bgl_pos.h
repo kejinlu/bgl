@@ -25,27 +25,27 @@ extern "C" {
  * Reference: pyglossary bgl_pos.py and GoldenDict bgl_babylon.hh
  */
 typedef enum {
-    BGL_POS_NOUN                   = 0x30, /**< Noun */
-    BGL_POS_ADJECTIVE              = 0x31, /**< Adjective */
-    BGL_POS_VERB                   = 0x32, /**< Verb */
-    BGL_POS_ADVERB                 = 0x33, /**< Adverb */
-    BGL_POS_INTERJECTION           = 0x34, /**< Interjection */
-    BGL_POS_PRONOUN                = 0x35, /**< Pronoun */
-    BGL_POS_PREPOSITION            = 0x36, /**< Preposition */
-    BGL_POS_CONJUNCTION            = 0x37, /**< Conjunction */
-    BGL_POS_SUFFIX                 = 0x38, /**< Suffix */
-    BGL_POS_PREFIX                 = 0x39, /**< Prefix */
-    BGL_POS_ARTICLE                = 0x3A, /**< Article */
-    BGL_POS_UNKNOWN_3B             = 0x3B, /**< Unknown (seen in some dictionaries) */
-    BGL_POS_ABBREVIATION           = 0x3C, /**< Abbreviation (common in Hebrew dictionaries) */
-    BGL_POS_MASC_NOUN_ADJ          = 0x3D, /**< Masculine noun and adjective */
-    BGL_POS_FEM_NOUN_ADJ           = 0x3E, /**< Feminine noun and adjective */
-    BGL_POS_MASC_FEM_NOUN_ADJ      = 0x3F, /**< Masculine and feminine noun and adjective */
-    BGL_POS_FEM_NOUN               = 0x40, /**< Feminine noun */
-    BGL_POS_MASC_FEM_NOUN          = 0x41, /**< Masculine and feminine noun */
-    BGL_POS_MASC_NOUN              = 0x42, /**< Masculine noun */
-    BGL_POS_NUMERAL                = 0x43, /**< Numeral */
-    BGL_POS_PARTICIPLE             = 0x44, /**< Participle */
+    BGL_POS_NOUN = 0x30,              /**< Noun */
+    BGL_POS_ADJECTIVE = 0x31,         /**< Adjective */
+    BGL_POS_VERB = 0x32,              /**< Verb */
+    BGL_POS_ADVERB = 0x33,            /**< Adverb */
+    BGL_POS_INTERJECTION = 0x34,      /**< Interjection */
+    BGL_POS_PRONOUN = 0x35,           /**< Pronoun */
+    BGL_POS_PREPOSITION = 0x36,       /**< Preposition */
+    BGL_POS_CONJUNCTION = 0x37,       /**< Conjunction */
+    BGL_POS_SUFFIX = 0x38,            /**< Suffix */
+    BGL_POS_PREFIX = 0x39,            /**< Prefix */
+    BGL_POS_ARTICLE = 0x3A,           /**< Article */
+    BGL_POS_UNKNOWN_3B = 0x3B,        /**< Unknown (seen in some dictionaries) */
+    BGL_POS_ABBREVIATION = 0x3C,      /**< Abbreviation (common in Hebrew dictionaries) */
+    BGL_POS_MASC_NOUN_ADJ = 0x3D,     /**< Masculine noun and adjective */
+    BGL_POS_FEM_NOUN_ADJ = 0x3E,      /**< Feminine noun and adjective */
+    BGL_POS_MASC_FEM_NOUN_ADJ = 0x3F, /**< Masculine and feminine noun and adjective */
+    BGL_POS_FEM_NOUN = 0x40,          /**< Feminine noun */
+    BGL_POS_MASC_FEM_NOUN = 0x41,     /**< Masculine and feminine noun */
+    BGL_POS_MASC_NOUN = 0x42,         /**< Masculine noun */
+    BGL_POS_NUMERAL = 0x43,           /**< Numeral */
+    BGL_POS_PARTICIPLE = 0x44,        /**< Participle */
 } bgl_pos_code;
 
 // ============================================================

@@ -18,49 +18,46 @@
 // ============================================================
 
 /** Definition field separator */
-#define BGL_DEF_FIELD_SEPARATOR     0x14
+#define BGL_DEF_FIELD_SEPARATOR 0x14
 
 /** Space character (used to detect \x14 in article body) */
-#define BGL_SPACE_CHAR              0x20
+#define BGL_SPACE_CHAR 0x20
 
 /** Part-of-speech field */
-#define BGL_DEF_FIELD_POS           0x02
+#define BGL_DEF_FIELD_POS 0x02
 
 /** Entry title field */
-#define BGL_DEF_FIELD_TITLE         0x18
+#define BGL_DEF_FIELD_TITLE 0x18
 
 /** Title transcription field */
-#define BGL_DEF_FIELD_TITLE_TRANS   0x28
+#define BGL_DEF_FIELD_TITLE_TRANS 0x28
 
 /** Unknown field (Hebrew dictionaries) */
-#define BGL_DEF_FIELD_UNKNOWN_1A    0x1A
+#define BGL_DEF_FIELD_UNKNOWN_1A 0x1A
 
 /** Part-of-speech code range */
-#define BGL_POS_CODE_MIN            0x30
-#define BGL_POS_CODE_MAX            0x47
+#define BGL_POS_CODE_MIN 0x30
+#define BGL_POS_CODE_MAX 0x47
 
 /** Transcription field 50 */
-#define BGL_DEF_FIELD_TRANS_50      0x50
+#define BGL_DEF_FIELD_TRANS_50 0x50
 
 /** Transcription field 60 */
-#define BGL_DEF_FIELD_TRANS_60      0x60
+#define BGL_DEF_FIELD_TRANS_60 0x60
 
 /** Numeric/text field range */
-#define BGL_DEF_FIELD_NUMERIC_MIN   0x40
-#define BGL_DEF_FIELD_NUMERIC_MAX   0x4F
+#define BGL_DEF_FIELD_NUMERIC_MIN 0x40
+#define BGL_DEF_FIELD_NUMERIC_MAX 0x4F
 
 /** Base for calculating fixed-length field size */
-#define BGL_DEF_FIELD_NUMERIC_BASE  0x3F
+#define BGL_DEF_FIELD_NUMERIC_BASE 0x3F
 
 // ============================================================
 // Function Implementations
 // ============================================================
 
-int bgl_parse_definition(const uint8_t *data, size_t data_size,
-                            const char *source_encoding,
-                            const char *target_encoding,
-                            const char *default_encoding,
-                            bgl_definition *definition) {
+int bgl_parse_definition(const uint8_t *data, size_t data_size, const char *source_encoding,
+                         const char *target_encoding, const char *default_encoding, bgl_definition *definition) {
     if (!data || data_size == 0 || !source_encoding || !target_encoding || !definition) {
         return -1;
     }
@@ -70,7 +67,7 @@ int bgl_parse_definition(const uint8_t *data, size_t data_size,
 
     // Step 1: Find the separator (signals beginning of definition fields)
     // According to pyglossary, separator followed by space is part of article
-    size_t fields_start = data_size;  // Default: no fields, entire data is definition
+    size_t fields_start = data_size; // Default: no fields, entire data is definition
     for (size_t i = 0; i < data_size - 1; i++) {
         if (data[i] == BGL_DEF_FIELD_SEPARATOR && data[i + 1] != BGL_SPACE_CHAR) {
             fields_start = i;
@@ -88,8 +85,7 @@ int bgl_parse_definition(const uint8_t *data, size_t data_size,
     // English-Chinese dictionary). Using default_encoding (typically CP1252) would
     // produce garbled output for non-Latin target languages.
     if (def_len > 0) {
-        definition->body = bgl_decode_charset_tags(def_data, def_len, target_encoding,
-                                                       source_encoding);
+        definition->body = bgl_decode_charset_tags(def_data, def_len, target_encoding, source_encoding);
         if (definition->body == NULL) {
             // Fallback: try simple decode
             definition->body = bgl_decode_text(def_data, def_len, target_encoding);
@@ -111,20 +107,20 @@ int bgl_parse_definition(const uint8_t *data, size_t data_size,
     }
 
     // Step 3: Parse fields after separator (if any)
-    size_t i = fields_start + 1;  // Skip separator
+    size_t i = fields_start + 1; // Skip separator
     while (i < data_size) {
-        uint8_t code = data[i++];  // Read field code and increment
+        uint8_t code = data[i++]; // Read field code and increment
 
         // Part-of-speech field: <field_code 0x02> <pos_code>
         if (code == BGL_DEF_FIELD_POS) {
             if (i >= data_size) {
-                break;  // Incomplete field
+                break; // Incomplete field
             }
-            uint8_t pos_code = data[i];  // Peek at next byte, don't increment yet
+            uint8_t pos_code = data[i]; // Peek at next byte, don't increment yet
 
             // Check if valid POS code (0x30-0x47)
             if (pos_code >= BGL_POS_CODE_MIN && pos_code <= BGL_POS_CODE_MAX) {
-                i++;  // Now increment to skip pos_code
+                i++; // Now increment to skip pos_code
                 // Extract POS
                 definition->part_of_speech = bgl_pos_abbr_by_code(pos_code);
                 if (!definition->part_of_speech || definition->part_of_speech[0] == '\0') {
@@ -136,25 +132,24 @@ int bgl_parse_definition(const uint8_t *data, size_t data_size,
                 continue;
             }
 
-        // Entry title field: <field_code 0x18> <1 byte length> <title>
+            // Entry title field: <field_code 0x18> <1 byte length> <title>
         } else if (code == BGL_DEF_FIELD_TITLE) {
             if (i + 1 > data_size) {
-                break;  // Incomplete field
+                break; // Incomplete field
             }
-            uint8_t len = data[i++];  // Read length
+            uint8_t len = data[i++]; // Read length
 
             if (len == 0 || i + len > data_size) {
-                continue;  // Empty or invalid length
+                continue; // Empty or invalid length
             }
 
             // Decode title with source_encoding as default encoding (supports charset tags)
             // Matches pyglossary's processDefi flow (u_title)
-            definition->title = bgl_decode_charset_tags(data + i, len, source_encoding,
-                                                           source_encoding);
+            definition->title = bgl_decode_charset_tags(data + i, len, source_encoding, source_encoding);
 
-            i += len;  // Skip title data
+            i += len; // Skip title data
 
-        // Title transcription field: <field_code 0x28> <2 bytes length, big-endian> <HTML text>
+            // Title transcription field: <field_code 0x28> <2 bytes length, big-endian> <HTML text>
         } else if (code == BGL_DEF_FIELD_TITLE_TRANS) {
             if (i + 2 > data_size) {
                 break;
@@ -167,17 +162,16 @@ int bgl_parse_definition(const uint8_t *data, size_t data_size,
             }
 
             // Decode title_trans with source_encoding (charset tags may be present)
-            definition->title_trans = bgl_decode_charset_tags(data + i, len, source_encoding,
-                                                                 source_encoding);
+            definition->title_trans = bgl_decode_charset_tags(data + i, len, source_encoding, source_encoding);
 
-            i += len;  // Skip title_trans data
+            i += len; // Skip title_trans data
 
-        // Unknown field 1a (Hebrew dictionaries): <field_code 0x1A> <1 byte length> <content>
+            // Unknown field 1a (Hebrew dictionaries): <field_code 0x1A> <1 byte length> <content>
         } else if (code == BGL_DEF_FIELD_UNKNOWN_1A) {
             if (i + 1 > data_size) {
                 break;
             }
-            uint8_t len = data[i++];  // Read length
+            uint8_t len = data[i++]; // Read length
 
             if (len == 0 || i + len > data_size) {
                 continue;
@@ -186,16 +180,16 @@ int bgl_parse_definition(const uint8_t *data, size_t data_size,
             // Decode field_1a with source_encoding
             // Note: No additional processing needed (only used for debug output in pyglossary)
             definition->field_1a = bgl_decode_text(data + i, len, source_encoding);
-            i += len;  // Skip field_1a data
+            i += len; // Skip field_1a data
 
-        // Transcription fields:
-        // 0x50: <field_code 0x50> <trans_code> <1 byte length> <data>
-        // 0x60: <field_code 0x60> <trans_code> <2 bytes length> <data>
+            // Transcription fields:
+            // 0x50: <field_code 0x50> <trans_code> <1 byte length> <data>
+            // 0x60: <field_code 0x60> <trans_code> <2 bytes length> <data>
         } else if (code == BGL_DEF_FIELD_TRANS_50 || code == BGL_DEF_FIELD_TRANS_60) {
             if (i >= data_size) {
                 break;
             }
-            uint8_t trans_code = data[i++];  // Read transcription type code
+            uint8_t trans_code = data[i++]; // Read transcription type code
 
             // Only process transcription when code == 0x1B
             // Other codes (0x10, 0x18, etc.) are not valid text data
@@ -207,14 +201,14 @@ int bgl_parse_definition(const uint8_t *data, size_t data_size,
                         break;
                     }
                     uint8_t len = data[i++];
-                    i += len;  // Skip data
+                    i += len; // Skip data
                 } else {
                     // 0x60: 2 bytes length
                     if (i + 2 > data_size) {
                         break;
                     }
                     uint16_t len = bgl_read_uint16_be(data + i);
-                    i += 2 + len;  // Skip length bytes and data
+                    i += 2 + len; // Skip length bytes and data
                 }
                 continue;
             }
@@ -244,13 +238,11 @@ int bgl_parse_definition(const uint8_t *data, size_t data_size,
             if (!definition->transcription) {
                 // Decode with source_encoding (supports charset tags)
                 // Matches pyglossary's processDefi flow (u_transcription_50/60)
-                definition->transcription = bgl_decode_charset_tags(data + i, len,
-                                                                        source_encoding,
-                                                                        source_encoding);
+                definition->transcription = bgl_decode_charset_tags(data + i, len, source_encoding, source_encoding);
             }
-            i += len;  // Skip transcription data
+            i += len; // Skip transcription data
 
-        // Numeric/text fields: <field_code 0x40-0x4F> (length = code - 0x3F) <text>
+            // Numeric/text fields: <field_code 0x40-0x4F> (length = code - 0x3F) <text>
         } else if (code >= BGL_DEF_FIELD_NUMERIC_MIN && code <= BGL_DEF_FIELD_NUMERIC_MAX) {
             uint8_t len = code - BGL_DEF_FIELD_NUMERIC_BASE;
 
@@ -302,8 +294,8 @@ char *bgl_format_definition(const bgl_definition *definition) {
         return NULL;
     }
 
-    // Helper to get string length safely
-    #define STRLEN(s) ((s) ? strlen(s) : 0)
+// Helper to get string length safely
+#define STRLEN(s) ((s) ? strlen(s) : 0)
 
     // Calculate total required length
     size_t total_len = 0;
@@ -318,11 +310,11 @@ char *bgl_format_definition(const bgl_definition *definition) {
         if (definition->title) {
             // " " before title if POS exists
             if (definition->part_of_speech) {
-                total_len += 1;  // space
+                total_len += 1; // space
             }
             total_len += STRLEN(definition->title);
         }
-        total_len += strlen("<br>");  // line break after POS/title
+        total_len += strlen("<br>"); // line break after POS/title
     }
 
     // 2. Title Trans part
@@ -333,9 +325,8 @@ char *bgl_format_definition(const bgl_definition *definition) {
     // 3. Transcription part
     if (definition->transcription) {
         // <span class="bgl-transcription">[transcription]</span>
-        total_len += strlen("<span class=\"bgl-transcription\">[") +
-                      STRLEN(definition->transcription) +
-                      strlen("]</span><br>");
+        total_len +=
+            strlen("<span class=\"bgl-transcription\">[") + STRLEN(definition->transcription) + strlen("]</span><br>");
     }
 
     // 4. Body part
@@ -391,6 +382,6 @@ char *bgl_format_definition(const bgl_definition *definition) {
         }
     }
 
-    #undef STRLEN
+#undef STRLEN
     return result;
 }

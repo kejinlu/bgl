@@ -92,9 +92,7 @@ static char *bgl_format_timestamp(const bgl_timestamp *ts, char *buffer, size_t 
         return NULL;
     }
 
-    snprintf(buffer, buffer_size, "%04d/%02d/%02d, %02d:%02d",
-             ts->year, ts->month, ts->day,
-             ts->hour, ts->minute);
+    snprintf(buffer, buffer_size, "%04d/%02d/%02d, %02d:%02d", ts->year, ts->month, ts->day, ts->hour, ts->minute);
 
     return buffer;
 }
@@ -123,134 +121,134 @@ int bgl_parse_info_field(const uint8_t *data, size_t data_size, bgl_info *info) 
 
     // Parse and directly assign to info structure
     switch (code) {
-        case BGL_INFO_TITLE:
-            if (b_value_len > 0) {
-                free(info->title);
-                info->title = (char *)malloc(b_value_len + 1);
-                if (info->title) {
-                    memcpy(info->title, b_value, b_value_len);
-                    info->title[b_value_len] = '\0';
-                }
+    case BGL_INFO_TITLE:
+        if (b_value_len > 0) {
+            free(info->title);
+            info->title = (char *)malloc(b_value_len + 1);
+            if (info->title) {
+                memcpy(info->title, b_value, b_value_len);
+                info->title[b_value_len] = '\0';
             }
-            break;
+        }
+        break;
 
-        case BGL_INFO_AUTHOR:
-            if (b_value_len > 0) {
-                free(info->author);
-                info->author = (char *)malloc(b_value_len + 1);
-                if (info->author) {
-                    memcpy(info->author, b_value, b_value_len);
-                    info->author[b_value_len] = '\0';
-                }
+    case BGL_INFO_AUTHOR:
+        if (b_value_len > 0) {
+            free(info->author);
+            info->author = (char *)malloc(b_value_len + 1);
+            if (info->author) {
+                memcpy(info->author, b_value, b_value_len);
+                info->author[b_value_len] = '\0';
             }
-            break;
+        }
+        break;
 
-        case BGL_INFO_EMAIL:
-            if (b_value_len > 0) {
-                free(info->email);
-                info->email = (char *)malloc(b_value_len + 1);
-                if (info->email) {
-                    memcpy(info->email, b_value, b_value_len);
-                    info->email[b_value_len] = '\0';
-                }
+    case BGL_INFO_EMAIL:
+        if (b_value_len > 0) {
+            free(info->email);
+            info->email = (char *)malloc(b_value_len + 1);
+            if (info->email) {
+                memcpy(info->email, b_value, b_value_len);
+                info->email[b_value_len] = '\0';
             }
-            break;
+        }
+        break;
 
-        case BGL_INFO_COPYRIGHT:
-            if (b_value_len > 0) {
-                free(info->copyright);
-                info->copyright = (char *)malloc(b_value_len + 1);
-                if (info->copyright) {
-                    memcpy(info->copyright, b_value, b_value_len);
-                    info->copyright[b_value_len] = '\0';
-                }
+    case BGL_INFO_COPYRIGHT:
+        if (b_value_len > 0) {
+            free(info->copyright);
+            info->copyright = (char *)malloc(b_value_len + 1);
+            if (info->copyright) {
+                memcpy(info->copyright, b_value, b_value_len);
+                info->copyright[b_value_len] = '\0';
             }
-            break;
+        }
+        break;
 
-        case BGL_INFO_DESCRIPTION:
-            if (b_value_len > 0) {
-                free(info->description);
-                info->description = (char *)malloc(b_value_len + 1);
-                if (info->description) {
-                    memcpy(info->description, b_value, b_value_len);
-                    info->description[b_value_len] = '\0';
-                }
+    case BGL_INFO_DESCRIPTION:
+        if (b_value_len > 0) {
+            free(info->description);
+            info->description = (char *)malloc(b_value_len + 1);
+            if (info->description) {
+                memcpy(info->description, b_value, b_value_len);
+                info->description[b_value_len] = '\0';
             }
-            break;
+        }
+        break;
 
-        case BGL_INFO_SOURCE_LANG:
-            if (b_value_len >= 4) {
-                uint32_t lang_code = bgl_read_uint32_be(b_value);
-                const bgl_language *lang = bgl_language_by_code((int)lang_code);
-                if (lang && lang->bcp47) {
-                    free(info->source_lang);
-                    info->source_lang = bgl_strdup(lang->bcp47);
-                }
+    case BGL_INFO_SOURCE_LANG:
+        if (b_value_len >= 4) {
+            uint32_t lang_code = bgl_read_uint32_be(b_value);
+            const bgl_language *lang = bgl_language_by_code((int)lang_code);
+            if (lang && lang->bcp47) {
+                free(info->source_lang);
+                info->source_lang = bgl_strdup(lang->bcp47);
             }
-            break;
+        }
+        break;
 
-        case BGL_INFO_TARGET_LANG:
-            if (b_value_len >= 4) {
-                uint32_t lang_code = bgl_read_uint32_be(b_value);
-                const bgl_language *lang = bgl_language_by_code((int)lang_code);
-                if (lang && lang->bcp47) {
-                    free(info->target_lang);
-                    info->target_lang = bgl_strdup(lang->bcp47);
-                }
+    case BGL_INFO_TARGET_LANG:
+        if (b_value_len >= 4) {
+            uint32_t lang_code = bgl_read_uint32_be(b_value);
+            const bgl_language *lang = bgl_language_by_code((int)lang_code);
+            if (lang && lang->bcp47) {
+                free(info->target_lang);
+                info->target_lang = bgl_strdup(lang->bcp47);
             }
-            break;
+        }
+        break;
 
-        case BGL_INFO_SOURCE_CHARSET:
-            if (b_value_len >= 1) {
-                int charset_code = b_value[0];
-                const char *encoding = bgl_charset_by_code(charset_code);
-                if (encoding) {
-                    info->source_charset = (char *)encoding;  // Static string, do not free
-                }
+    case BGL_INFO_SOURCE_CHARSET:
+        if (b_value_len >= 1) {
+            int charset_code = b_value[0];
+            const char *encoding = bgl_charset_by_code(charset_code);
+            if (encoding) {
+                info->source_charset = (char *)encoding; // Static string, do not free
             }
-            break;
+        }
+        break;
 
-        case BGL_INFO_TARGET_CHARSET:
-            if (b_value_len >= 1) {
-                int charset_code = b_value[0];
-                const char *encoding = bgl_charset_by_code(charset_code);
-                if (encoding) {
-                    info->target_charset = (char *)encoding;  // Static string, do not free
-                }
+    case BGL_INFO_TARGET_CHARSET:
+        if (b_value_len >= 1) {
+            int charset_code = b_value[0];
+            const char *encoding = bgl_charset_by_code(charset_code);
+            if (encoding) {
+                info->target_charset = (char *)encoding; // Static string, do not free
             }
-            break;
+        }
+        break;
 
-        case BGL_INFO_FLAGS:
-            if (b_value_len >= 4) {
-                bgl_flags flags;
-                if (bgl_parse_flags_field(b_value, &flags) == 0) {
-                    info->utf8_mode = flags.utf8_encoding;
-                }
+    case BGL_INFO_FLAGS:
+        if (b_value_len >= 4) {
+            bgl_flags flags;
+            if (bgl_parse_flags_field(b_value, &flags) == 0) {
+                info->utf8_mode = flags.utf8_encoding;
             }
-            break;
+        }
+        break;
 
-        case BGL_INFO_NUM_ENTRIES:
-            if (b_value_len >= 4) {
-                uint32_t num_entries = bgl_read_uint32_be(b_value);
-                info->entry_count = (int)num_entries;
+    case BGL_INFO_NUM_ENTRIES:
+        if (b_value_len >= 4) {
+            uint32_t num_entries = bgl_read_uint32_be(b_value);
+            info->entry_count = (int)num_entries;
+        }
+        break;
+
+    case BGL_INFO_ICON1:
+        if (b_value_len > 0) {
+            free(info->icon);
+            info->icon = (uint8_t *)malloc(b_value_len);
+            if (info->icon) {
+                memcpy(info->icon, b_value, b_value_len);
+                info->icon_size = b_value_len;
             }
-            break;
+        }
+        break;
 
-        case BGL_INFO_ICON1:
-            if (b_value_len > 0) {
-                free(info->icon);
-                info->icon = (uint8_t *)malloc(b_value_len);
-                if (info->icon) {
-                    memcpy(info->icon, b_value, b_value_len);
-                    info->icon_size = b_value_len;
-                }
-            }
-            break;
-
-        // Other types are not stored in bgl_info structure
-        // They can be handled separately if needed
-        default:
-            break;
+    // Other types are not stored in bgl_info structure
+    // They can be handled separately if needed
+    default:
+        break;
     }
 
     return 0;
@@ -342,13 +340,20 @@ void bgl_free_info(bgl_info *info) {
         return;
     }
 
-    free(info->title);        info->title = NULL;
-    free(info->author);       info->author = NULL;
-    free(info->email);        info->email = NULL;
-    free(info->copyright);    info->copyright = NULL;
-    free(info->description);  info->description = NULL;
-    free(info->source_lang);  info->source_lang = NULL;
-    free(info->target_lang);  info->target_lang = NULL;
+    free(info->title);
+    info->title = NULL;
+    free(info->author);
+    info->author = NULL;
+    free(info->email);
+    info->email = NULL;
+    free(info->copyright);
+    info->copyright = NULL;
+    free(info->description);
+    info->description = NULL;
+    free(info->source_lang);
+    info->source_lang = NULL;
+    free(info->target_lang);
+    info->target_lang = NULL;
 
     // source_charset and target_charset point to static strings, do not free
     info->source_charset = NULL;
@@ -357,5 +362,7 @@ void bgl_free_info(bgl_info *info) {
     info->utf8_mode = false;
     info->entry_count = 0;
 
-    free(info->icon);       info->icon = NULL;       info->icon_size = 0;
+    free(info->icon);
+    info->icon = NULL;
+    info->icon_size = 0;
 }

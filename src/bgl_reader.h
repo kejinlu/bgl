@@ -23,13 +23,13 @@ extern "C" {
 // ============================================================
 
 typedef enum {
-    BGL_OK                = 0,
-    BGL_END               = 1,
+    BGL_OK = 0,
+    BGL_END = 1,
 
     BGL_ERR_INVALID_PARAM = -1,
-    BGL_ERR_IO            = -2,
-    BGL_ERR_FORMAT        = -3,
-    BGL_ERR_MEMORY        = -4
+    BGL_ERR_IO = -2,
+    BGL_ERR_FORMAT = -3,
+    BGL_ERR_MEMORY = -4
 } bgl_status;
 
 // ============================================================
@@ -40,19 +40,19 @@ typedef enum {
  * @brief BGL dictionary entry information (standard format)
  */
 typedef struct {
-    char *word;                        /**< Headword (UTF-8, must be freed) */
-    bgl_definition def;                /**< Definition fields (must be freed using bgl_free_definition) */
-    char **alternates;                 /**< Alternate words array (must be freed, use alternate_count for size) */
-    int alternate_count;               /**< Number of alternate words */
+    char *word;          /**< Headword (UTF-8, must be freed) */
+    bgl_definition def;  /**< Definition fields (must be freed using bgl_free_definition) */
+    char **alternates;   /**< Alternate words array (must be freed, use alternate_count for size) */
+    int alternate_count; /**< Number of alternate words */
 } bgl_entry;
 
 /**
  * @brief BGL embedded resource (image, HTML, etc.)
  */
 typedef struct {
-    char *name;              /**< Resource name (e.g., "image.png", must be freed) */
-    uint8_t *data;           /**< Resource data (must be freed) */
-    size_t data_size;        /**< Data size in bytes */
+    char *name;       /**< Resource name (e.g., "image.png", must be freed) */
+    uint8_t *data;    /**< Resource data (must be freed) */
+    size_t data_size; /**< Data size in bytes */
 } bgl_resource;
 
 // ============================================================

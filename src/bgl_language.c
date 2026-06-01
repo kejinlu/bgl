@@ -136,23 +136,23 @@ const bgl_language *bgl_language_at(int index) {
 // Reference: BGL charset codes (0x41-0x4e, 14 consecutive values)
 // Uses code - 0x41 as array index for O(1) lookup
 
-#define CHARSET_COUNT 14  // 0x4e - 0x41 + 1
+#define CHARSET_COUNT 14 // 0x4e - 0x41 + 1
 
 static const char *const charsets[CHARSET_COUNT] = {
-    /* 0x41 */ "CP1252",  // Default
-    /* 0x42 */ "CP1252",  // Latin
-    /* 0x43 */ "CP1250",  // Eastern European
-    /* 0x44 */ "CP1251",  // Cyrillic
-    /* 0x45 */ "CP932",   // Japanese
-    /* 0x46 */ "CP950",   // Traditional Chinese
-    /* 0x47 */ "CP936",   // Simplified Chinese
-    /* 0x48 */ "CP1257",  // Baltic
-    /* 0x49 */ "CP1253",  // Greek
-    /* 0x4a */ "CP949",   // Korean
-    /* 0x4b */ "CP1254",  // Turkish
-    /* 0x4c */ "CP1255",  // Hebrew
-    /* 0x4d */ "CP1256",  // Arabic
-    /* 0x4e */ "CP874",   // Thai
+    /* 0x41 */ "CP1252", // Default
+    /* 0x42 */ "CP1252", // Latin
+    /* 0x43 */ "CP1250", // Eastern European
+    /* 0x44 */ "CP1251", // Cyrillic
+    /* 0x45 */ "CP932",  // Japanese
+    /* 0x46 */ "CP950",  // Traditional Chinese
+    /* 0x47 */ "CP936",  // Simplified Chinese
+    /* 0x48 */ "CP1257", // Baltic
+    /* 0x49 */ "CP1253", // Greek
+    /* 0x4a */ "CP949",  // Korean
+    /* 0x4b */ "CP1254", // Turkish
+    /* 0x4c */ "CP1255", // Hebrew
+    /* 0x4d */ "CP1256", // Arabic
+    /* 0x4e */ "CP874",  // Thai
 };
 
 const char *bgl_charset_by_code(int code) {

@@ -33,11 +33,11 @@ extern "C" {
  * - Use bgl_free_definition() to free all fields
  */
 typedef struct {
-    char *body;             /**< Pure definition text (UTF-8, without control codes) */
-    char *title;            /**< Entry title (0x18 field, UTF-8) - displayed form of the word */
-    char *title_trans;      /**< Title transcription (0x28 field, UTF-8) - romanization/translation */
-    char *transcription;    /**< Transcription (0x50 field, UTF-8) - pronunciation guide */
-    char *field_1a;         /**< Unknown field (0x1A, UTF-8) - seen in Hebrew dictionaries */
+    char *body;                 /**< Pure definition text (UTF-8, without control codes) */
+    char *title;                /**< Entry title (0x18 field, UTF-8) - displayed form of the word */
+    char *title_trans;          /**< Title transcription (0x28 field, UTF-8) - romanization/translation */
+    char *transcription;        /**< Transcription (0x50 field, UTF-8) - pronunciation guide */
+    char *field_1a;             /**< Unknown field (0x1A, UTF-8) - seen in Hebrew dictionaries */
     const char *part_of_speech; /**< Part-of-speech string (static memory, points to bgl_pos_*), NULL if none */
 } bgl_definition;
 
@@ -81,11 +81,8 @@ typedef struct {
  * - All string fields in fields are malloc'd except part_of_speech (static memory)
  * - Caller must call bgl_free_definition() to free
  */
-int bgl_parse_definition(const uint8_t *data, size_t data_size,
-                            const char *source_encoding,
-                            const char *target_encoding,
-                            const char *default_encoding,
-                            bgl_definition *definition);
+int bgl_parse_definition(const uint8_t *data, size_t data_size, const char *source_encoding,
+                         const char *target_encoding, const char *default_encoding, bgl_definition *definition);
 
 /**
  * @brief Free definition fields

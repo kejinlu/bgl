@@ -22,10 +22,10 @@ extern "C" {
  * @brief Babylon language properties
  */
 typedef struct {
-    const char *name;        /**< Language name (e.g., "English", "Japanese") */
-    const char *bcp47;       /**< BCP 47 language tag (e.g., "en", "zh-CN") */
-    const char *encoding;    /**< Windows code page (e.g., "CP1252", "CP932") */
-    int code;                /**< Code value in BGL file (0x00-0x3d) */
+    const char *name;     /**< Language name (e.g., "English", "Japanese") */
+    const char *bcp47;    /**< BCP 47 language tag (e.g., "en", "zh-CN") */
+    const char *encoding; /**< Windows code page (e.g., "CP1252", "CP932") */
+    int code;             /**< Code value in BGL file (0x00-0x3d) */
 } bgl_language;
 
 // ============================================================
